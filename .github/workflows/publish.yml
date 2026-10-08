@@ -1,0 +1,145 @@
+# Publishes every app version of master that catalog-next does not list yet: build (no secrets, no write rights), then
+# publish, which runs no code of the apps: it pushes the images by digest, pins compose.yaml and the images lock to
+# them, packs each app, adds it to catalog-next with a new index.json, signs it with the next key when the environment
+# catalog-next has one, and pushes the branch. A published version is never overwritten.
+name: publish
+
+on:
+  push:
+    branches: [master]
+    paths: ['apps/**', 'catalog.json']
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: publish
+  cancel-in-progress: false
+
+jobs:
+  plan:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    outputs:
+      apps: ${{ steps.pending.outputs.apps }}
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - name: Refuse the template's placeholder
+        run: |
+          if [ "$(jq -r .id catalog.json)" = com.example.catalog ]; then
+            echo "::error::Rename the catalog in catalog.json first (see the README)."
+            exit 1
+          fi
+      - uses: ./.github/actions/setup-pithyx
+      - name: Find the versions to publish
+        id: pending
+        run: |
+          index=()
+          if git fetch --depth 1 origin catalog-next 2>/dev/null; then
+            git show FETCH_HEAD:index.json >"$RUNNER_TEMP/index.json"
+            index=(--index "$RUNNER_TEMP/index.json")
+          fi
+          apps="$(pithyx catalog pending "${index[@]}")"
+          echo "apps=$apps" >>"$GITHUB_OUTPUT"
+          echo "To publish: $apps"
+
+  build:
+    needs: plan
+    if: needs.plan.outputs.apps != '[]'
+    permissions:
+      contents: read
+    uses: ./.github/workflows/build.yml
+    with:
+      apps: ${{ needs.plan.outputs.apps }}
+
+  publish:
+    needs: [plan, build]
+    runs-on: ubuntu-latest
+    environment: catalog-next
+    permissions:
+      contents: write
+      packages: write
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: ./.github/actions/setup-pithyx
+      - uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2
+        with:
+          pattern: build-*
+          path: ${{ runner.temp }}/builds
+      - name: Check out catalog-next
+        run: |
+          if git fetch --depth 1 origin catalog-next 2>/dev/null; then
+            git worktree add --detach "$RUNNER_TEMP/branch" FETCH_HEAD
+          else
+            git worktree add --detach "$RUNNER_TEMP/branch"
+            git -C "$RUNNER_TEMP/branch" checkout --quiet --orphan catalog-next
+            git -C "$RUNNER_TEMP/branch" rm -r --quiet --force .
+          fi
+      - name: Push the images
+        env:
+          APPS: ${{ needs.plan.outputs.apps }}
+          TOKEN: ${{ github.token }}
+        run: |
+          command -v skopeo >/dev/null || { sudo apt-get update -q && sudo apt-get install -y -q skopeo; }
+          echo "$TOKEN" | skopeo login ghcr.io --username "$GITHUB_ACTOR" --password-stdin
+          prefix="$(jq -r .images catalog.json)"
+          for app in $(jq -c '.[] | select(.backend)' <<<"$APPS"); do
+            id="$(jq -r .id <<<"$app")"
+            version="$(jq -r .version <<<"$app")"
+            for archive in "$RUNNER_TEMP/builds/build-$id/images/"*.tar; do
+              service="$(basename "$archive" .tar)"
+              reference="$prefix/$id/$service:$version"
+              digest="$(jq -r '.manifests[0].digest' <(tar -xOf "$archive" index.json))"
+              if published="$(skopeo inspect --raw "docker://$reference" 2>/dev/null)"; then
+                # The tag exists: only the same image may be there, a version is never overwritten.
+                built="$(tar -xOf "$archive" "blobs/sha256/${digest#sha256:}")"
+                [ "$(jq -cS . <<<"$published")" = "$(jq -cS . <<<"$built")" ] \
+                  || { echo "::error::$reference exists with another image"; exit 1; }
+                echo "$reference is published already"
+              else
+                skopeo copy --all --preserve-digests "oci-archive:$archive" "docker://$reference"
+              fi
+            done
+          done
+      - name: Pack the apps and add them to catalog-next
+        env:
+          APPS: ${{ needs.plan.outputs.apps }}
+        run: |
+          prefix="$(jq -r .images catalog.json)"
+          mkdir -p "$RUNNER_TEMP/packages"
+          for app in $(jq -c '.[]' <<<"$APPS"); do
+            id="$(jq -r .id <<<"$app")"
+            path="$(jq -r .path <<<"$app")"
+            build="$RUNNER_TEMP/builds/build-$id"
+            if [ "$(jq -r .backend <<<"$app")" = true ]; then
+              pithyx build "$path" --pin "$prefix" --oci-out "$build/images"
+            fi
+            pithyx pack "$path" --frontend "$build/frontend" --out "$RUNNER_TEMP/packages"
+          done
+          cp catalog.json "$RUNNER_TEMP/branch/catalog.json"
+          pithyx catalog index "$RUNNER_TEMP/branch" --channel beta \
+            $(for package in "$RUNNER_TEMP/packages/"*.pithyxapp; do echo --add "$package"; done) \
+            --source . --repository "https://github.com/$GITHUB_REPOSITORY" --commit "$GITHUB_SHA"
+      - name: Sign the index
+        env:
+          PITHYX_SIGNING_KEY: ${{ secrets.SIGNING_KEY }}
+          KEY_ID: ${{ vars.SIGNING_KEY_ID }}
+        run: |
+          if [ -n "$PITHYX_SIGNING_KEY" ]; then
+            pithyx catalog sign "$RUNNER_TEMP/branch" --key-id "$KEY_ID"
+          else
+            echo "No signing key in the environment catalog-next: the index stays unsigned."
+          fi
+          pithyx catalog verify "$RUNNER_TEMP/branch" --channel beta
+      - name: Push catalog-next
+        run: |
+          cd "$RUNNER_TEMP/branch"
+          git add --all
+          git -c user.name="github-actions[bot]" -c user.email="41898282+github-actions[bot]@users.noreply.github.com" \
+            commit --quiet -m "Publish $(jq -r '[.apps | to_entries[] | .key] | length' index.json) apps, sequence $(jq .sequence index.json)" \
+            -m "From $GITHUB_REPOSITORY@$GITHUB_SHA."
+          git push origin HEAD:refs/heads/catalog-next

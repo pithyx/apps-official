@@ -1,0 +1,55 @@
+# Checks a pull request that changes an app: the catalog rules (pithyx catalog check) and a build without secrets.
+# Runs from forks only after a maintainer approved the run.
+name: check
+
+on:
+  pull_request:
+    branches: [master]
+    paths: ['apps/**']
+
+permissions:
+  contents: read
+
+jobs:
+  rules:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    outputs:
+      apps: ${{ steps.pending.outputs.apps }}
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: ./.github/actions/setup-pithyx
+      - name: Read the published versions
+        run: |
+          if git fetch --depth 1 origin catalog-next 2>/dev/null; then
+            git show FETCH_HEAD:index.json >"$RUNNER_TEMP/index.json"
+          fi
+      - name: Check the catalog rules
+        env:
+          BASE: ${{ github.event.pull_request.base.sha }}
+          AUTHOR: ${{ github.event.pull_request.user.login }}
+          RESERVED: ${{ github.repository_owner == 'pithyx' && '--allow-reserved-id' || '' }}
+        run: |
+          index=()
+          [ -f "$RUNNER_TEMP/index.json" ] && index=(--index "$RUNNER_TEMP/index.json")
+          # shellcheck disable=SC2086
+          pithyx catalog check --base "$BASE" --author "$AUTHOR" "${index[@]}" $RESERVED
+      - name: Find the versions to build
+        id: pending
+        run: |
+          index=()
+          [ -f "$RUNNER_TEMP/index.json" ] && index=(--index "$RUNNER_TEMP/index.json")
+          echo "apps=$(pithyx catalog pending "${index[@]}")" >>"$GITHUB_OUTPUT"
+
+  build:
+    needs: rules
+    if: needs.rules.outputs.apps != '[]'
+    permissions:
+      contents: read
+    uses: ./.github/workflows/build.yml
+    with:
+      apps: ${{ needs.rules.outputs.apps }}

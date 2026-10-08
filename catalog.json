@@ -1,0 +1,11 @@
+{
+  "catalogVersion": 1,
+  "id": "com.example.catalog",
+  "name": { "en": "Example catalog", "de": "Beispielkatalog" },
+  "description": {
+    "en": "Replace this with one or two sentences about your catalog.",
+    "de": "Ersetze dies durch ein oder zwei Sätze über deinen Katalog."
+  },
+  "homepage": "https://github.com/pithyx/catalog-template",
+  "images": "ghcr.io/pithyx/catalog-template"
+}

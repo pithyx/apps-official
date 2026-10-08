@@ -1,0 +1,58 @@
+# Promotes catalog-next to catalog, the stable channel: every version catalog-next has and catalog does not is copied
+# with its index entry after its files were checked, the stable index.json gets the next sequence and is signed with
+# the catalog key. The job waits for the owner's approval in the environment catalog-release before it sees the key.
+name: promote
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: promote
+  cancel-in-progress: false
+
+jobs:
+  promote:
+    runs-on: ubuntu-latest
+    environment: catalog-release
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: ./.github/actions/setup-pithyx
+      - name: Check out catalog-next and catalog
+        run: |
+          git fetch --depth 1 origin catalog-next
+          git worktree add --detach "$RUNNER_TEMP/next" FETCH_HEAD
+          if git fetch --depth 1 origin catalog 2>/dev/null; then
+            git worktree add --detach "$RUNNER_TEMP/branch" FETCH_HEAD
+          else
+            git worktree add --detach "$RUNNER_TEMP/branch"
+            git -C "$RUNNER_TEMP/branch" checkout --quiet --orphan catalog
+            git -C "$RUNNER_TEMP/branch" rm -r --quiet --force .
+          fi
+      - name: Promote
+        run: |
+          pithyx catalog verify "$RUNNER_TEMP/next" --channel beta
+          cp catalog.json "$RUNNER_TEMP/branch/catalog.json"
+          pithyx catalog index "$RUNNER_TEMP/branch" --channel stable --promote "$RUNNER_TEMP/next"
+      - name: Sign the index
+        env:
+          PITHYX_SIGNING_KEY: ${{ secrets.SIGNING_KEY }}
+          KEY_ID: ${{ vars.SIGNING_KEY_ID }}
+        run: |
+          if [ -n "$PITHYX_SIGNING_KEY" ]; then
+            pithyx catalog sign "$RUNNER_TEMP/branch" --key-id "$KEY_ID"
+          else
+            echo "No signing key in the environment catalog-release: the index stays unsigned."
+          fi
+          pithyx catalog verify "$RUNNER_TEMP/branch" --channel stable
+      - name: Push catalog
+        run: |
+          cd "$RUNNER_TEMP/branch"
+          git add --all
+          git -c user.name="github-actions[bot]" -c user.email="41898282+github-actions[bot]@users.noreply.github.com" \
+            commit --quiet -m "Promote catalog-next, sequence $(jq .sequence index.json)" -m "From $GITHUB_REPOSITORY@$GITHUB_SHA."
+          git push origin HEAD:refs/heads/catalog

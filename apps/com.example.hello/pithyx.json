@@ -1,0 +1,22 @@
+{
+  "manifestVersion": 1,
+  "id": "com.example.hello",
+  "version": "1.0.0",
+  "name": { "en": "Hello", "de": "Hallo" },
+  "description": {
+    "en": "An example app of the catalog template: a window that says hello.",
+    "de": "Eine Beispiel-App der Katalogvorlage: ein Fenster, das Hallo sagt."
+  },
+  "author": { "name": "The Pithyx authors" },
+  "license": "MIT",
+  "homepage": "https://github.com/pithyx/catalog-template",
+  "entry": "frontend/index.html",
+  "sdk": "^1.0.0-rc.5",
+  "pithyx": ">=0.1.0",
+  "permissions": [],
+  "window": {
+    "instances": "single",
+    "defaultSize": { "width": 420, "height": 300 },
+    "minSize": { "width": 320, "height": 240 }
+  }
+}

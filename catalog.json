@@ -1,11 +1,11 @@
 {
   "catalogVersion": 1,
-  "id": "com.example.catalog",
-  "name": { "en": "Example catalog", "de": "Beispielkatalog" },
+  "id": "org.pithyx.official",
+  "name": { "en": "Pithyx", "de": "Pithyx" },
   "description": {
-    "en": "Replace this with one or two sentences about your catalog.",
-    "de": "Ersetze dies durch ein oder zwei Sätze über deinen Katalog."
+    "en": "The official apps of the Pithyx project, reviewed and signed by the project.",
+    "de": "Die offiziellen Apps des Pithyx-Projekts, vom Projekt geprüft und signiert."
   },
-  "homepage": "https://github.com/pithyx/catalog-template",
-  "images": "ghcr.io/pithyx/catalog-template"
+  "homepage": "https://github.com/pithyx/apps-official",
+  "images": "ghcr.io/pithyx/apps"
 }

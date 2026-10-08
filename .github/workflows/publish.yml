@@ -56,8 +56,10 @@ jobs:
     with:
       apps: ${{ needs.plan.outputs.apps }}
 
+  # Also without new versions, so a new catalog gets its branch and a changed catalog.json reaches the boxes.
   publish:
     needs: [plan, build]
+    if: always() && needs.plan.result == 'success' && contains(fromJSON('["success", "skipped"]'), needs.build.result)
     runs-on: ubuntu-latest
     environment: catalog-next
     permissions:
@@ -66,7 +68,8 @@ jobs:
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
       - uses: ./.github/actions/setup-pithyx
-      - uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2
+      - if: needs.build.result == 'success'
+        uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2
         with:
           pattern: build-*
           path: ${{ runner.temp }}/builds
@@ -121,8 +124,9 @@ jobs:
             pithyx pack "$path" --frontend "$build/frontend" --out "$RUNNER_TEMP/packages"
           done
           cp catalog.json "$RUNNER_TEMP/branch/catalog.json"
+          # shellcheck disable=SC2046
           pithyx catalog index "$RUNNER_TEMP/branch" --channel beta \
-            $(for package in "$RUNNER_TEMP/packages/"*.pithyxapp; do echo --add "$package"; done) \
+            $(find "$RUNNER_TEMP/packages" -name '*.pithyxapp' -printf '--add %p\n') \
             --source . --repository "https://github.com/$GITHUB_REPOSITORY" --commit "$GITHUB_SHA"
       - name: Sign the index
         env:
@@ -140,6 +144,6 @@ jobs:
           cd "$RUNNER_TEMP/branch"
           git add --all
           git -c user.name="github-actions[bot]" -c user.email="41898282+github-actions[bot]@users.noreply.github.com" \
-            commit --quiet -m "Publish $(jq -r '[.apps | to_entries[] | .key] | length' index.json) apps, sequence $(jq .sequence index.json)" \
+            commit --quiet -m "Publish sequence $(jq .sequence index.json)" \
             -m "From $GITHUB_REPOSITORY@$GITHUB_SHA."
           git push origin HEAD:refs/heads/catalog-next

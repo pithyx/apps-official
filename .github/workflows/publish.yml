@@ -73,6 +73,7 @@ jobs:
         with:
           pattern: build-*
           path: ${{ runner.temp }}/builds
+          merge-multiple: true
       - name: Check out catalog-next
         run: |
           if git fetch --depth 1 origin catalog-next 2>/dev/null; then
@@ -93,7 +94,7 @@ jobs:
           for app in $(jq -c '.[] | select(.backend)' <<<"$APPS"); do
             id="$(jq -r .id <<<"$app")"
             version="$(jq -r .version <<<"$app")"
-            for archive in "$RUNNER_TEMP/builds/build-$id/images/"*.tar; do
+            for archive in "$RUNNER_TEMP/builds/$id/images/"*.tar; do
               service="$(basename "$archive" .tar)"
               reference="$prefix/$id/$service:$version"
               digest="$(jq -r '.manifests[0].digest' <(tar -xOf "$archive" index.json))"
@@ -117,7 +118,7 @@ jobs:
           for app in $(jq -c '.[]' <<<"$APPS"); do
             id="$(jq -r .id <<<"$app")"
             path="$(jq -r .path <<<"$app")"
-            build="$RUNNER_TEMP/builds/build-$id"
+            build="$RUNNER_TEMP/builds/$id"
             if [ "$(jq -r .backend <<<"$app")" = true ]; then
               pithyx build "$path" --pin "$prefix" --oci-out "$build/images"
             fi

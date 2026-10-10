@@ -8,9 +8,12 @@
 
 ## Checklist
 
+- [ ] The id is a reversed domain with 3 to 5 parts (for example `com.example.chat`) and I own or may use that domain.
+- [ ] `pithyx catalog check` passes locally.
 - [ ] One folder `apps/<id>/`, named like the app's id, and nothing outside it.
 - [ ] `pithyx.json` has `license` and `pithyx`; the version is higher than every published one.
 - [ ] My GitHub login is in `maintainers.json`.
+- [ ] Attribution: the app credits the projects, fonts and images it uses, with their licenses.
 - [ ] The license allows the catalog to build and redistribute the app and its images.
 - [ ] Every `FROM` is pinned with `@sha256:`; no binaries, minified files or generated bundles.
 - [ ] I tried the package on a box as a sideload (`pithyx build`, `pithyx pack --images`).

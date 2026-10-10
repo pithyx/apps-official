@@ -50,6 +50,6 @@ jobs:
     if: needs.rules.outputs.apps != '[]'
     permissions:
       contents: read
-    uses: ./.github/workflows/build.yml
+    uses: ./.github/workflows/build.yaml
     with:
       apps: ${{ needs.rules.outputs.apps }}

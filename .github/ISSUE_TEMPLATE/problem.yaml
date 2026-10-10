@@ -1,0 +1,34 @@
+name: Report a problem with an app
+description: An app from this catalog does not work or does something it should not
+title: "Problem: "
+labels: ["app problem"]
+body:
+  - type: markdown
+    attributes:
+      value: For a security problem, do not use this form. Follow SECURITY.md instead.
+  - type: input
+    id: app
+    attributes:
+      label: App id and version
+      description: For example com.example.chat 1.0.1, as shown in the Store.
+    validations:
+      required: true
+  - type: input
+    id: pithyx
+    attributes:
+      label: Pithyx version
+    validations:
+      required: true
+  - type: textarea
+    id: what
+    attributes:
+      label: What happens
+      description: What you did, what you expected and what happened instead.
+    validations:
+      required: true
+  - type: textarea
+    id: logs
+    attributes:
+      label: Log lines
+      description: Lines from the app's log (Settings, Logs, source app/id). Remove anything private.
+      render: text

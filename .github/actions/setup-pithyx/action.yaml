@@ -6,13 +6,8 @@ runs:
     - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
       with:
         node-version: 24
-    # Temporary: @pithyx/cli 1.0.0-rc.5 is not on npm yet, so it comes from the packages in vendor/, built with npm pack
-    # from the Pithyx repository. Once it is published, install it with a pinned version instead
-    # (npm install --global @pithyx/cli@1.0.0-rc.5) and delete vendor/.
     - name: Install @pithyx/cli
       shell: bash
-      env:
-        VENDOR: ${{ github.action_path }}/../../../vendor
       run: |
-        npm install --global --no-audit --no-fund "$VENDOR/pithyx-sdk-1.0.0-rc.5.tgz" "$VENDOR/pithyx-cli-1.0.0-rc.5.tgz"
+        npm install --global --no-audit --no-fund @pithyx/cli@1.0.0-rc.5
         pithyx --version

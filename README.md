@@ -2,6 +2,8 @@
 
 This repository is the **official app catalog of [Pithyx](https://github.com/pithyx)**: the apps the Pithyx project offers in the Store's tab "Official" with the badge "Pithyx". It is the only catalog that may publish apps with ids under `org.pithyx.*`. A Pithyx box has it enabled by default, verifies every index against the project's keys built into Pithyx, and installs only what the project reviewed, built and signed. The system apps (Files, Settings, Store and the rest) are not here: they ship with Pithyx itself.
 
+Part of Pithyx by Schecher1 (https://github.com/Schecher1).
+
 ## Structure
 
 - `master`: the source of every app in `apps/<id>/` (it starts empty), changed only by reviewed pull requests, and `catalog.json`.

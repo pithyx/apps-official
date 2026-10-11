@@ -1,0 +1,39 @@
+name: App request
+description: Ask for an app to be added to this catalog
+title: "App request: "
+labels: ["app request"]
+body:
+  - type: input
+    id: name
+    attributes:
+      label: App name
+      description: The app you would like to see, with a link to its home page or source.
+    validations:
+      required: true
+  - type: textarea
+    id: what
+    attributes:
+      label: What should it do
+      description: Describe the use on a NAS or server in a few sentences.
+    validations:
+      required: true
+  - type: dropdown
+    id: kind
+    attributes:
+      label: What is it
+      options:
+        - An existing project that has no Pithyx app yet
+        - A new app idea
+        - My own app that I want to submit
+    validations:
+      required: true
+  - type: input
+    id: license
+    attributes:
+      label: License
+      description: The SPDX license of the project, if you know it.
+  - type: textarea
+    id: needs
+    attributes:
+      label: What it needs
+      description: Containers, storage, network access or other rights, if you know them.

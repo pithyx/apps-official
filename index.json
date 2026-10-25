@@ -2,7 +2,38 @@
   "indexVersion": 1,
   "catalog": "org.pithyx.official",
   "channel": "stable",
-  "sequence": 1,
-  "publishedAt": "2026-10-18T14:02:46Z",
-  "apps": {}
+  "sequence": 2,
+  "publishedAt": "2026-10-25T13:16:50Z",
+  "apps": {
+    "org.pithyx.editor": {
+      "versions": {
+        "1.0.0": {
+          "publishedAt": "2026-10-25T13:11:53Z",
+          "package": {
+            "sha256": "57ace9eae5adea1e176694611c38f7e7d88b59414762d395aaedb855e9996813",
+            "size": 1407784
+          },
+          "manifest": {
+            "sha256": "a4ce8e5e5eb879c66f18129edfe23589fd4098c634ca9f1d02570319b26a459b",
+            "size": 2995
+          },
+          "icon": {
+            "sha256": "cf7cbcc9ae37ef729f8d22e217d4d6185b710a59dd13c75a6a974d82319df3e2",
+            "size": 982
+          },
+          "architectures": [
+            "amd64",
+            "arm64"
+          ],
+          "pithyx": ">=1.0.0",
+          "license": "MIT",
+          "source": {
+            "repository": "https://github.com/pithyx/apps-official",
+            "commit": "d873b4b25fc824adf60028a40dea66d43728921d",
+            "path": "apps/org.pithyx.editor"
+          }
+        }
+      }
+    }
+  }
 }

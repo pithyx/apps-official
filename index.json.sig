@@ -3,7 +3,7 @@
   "signatures": [
     {
       "keyId": "pithyx-catalog-1",
-      "signature": "A1+HABS0dkMDROqCsobfyEkbkOErjyGXq65k8LWdU0n/LznoKLRQtfDkakcGVZHGfFjtM2Vqn5yQv7qqCAYABw=="
+      "signature": "7DJXvF/NQeYBR//nfCKfYFswgXPkBjCpcDzGowcz1uws3IvoSSvaxrixuzbt2Rp0TXsMRuqxtDhBX1dMuIWkBQ=="
     }
   ]
 }

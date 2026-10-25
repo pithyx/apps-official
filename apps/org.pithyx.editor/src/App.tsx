@@ -14,6 +14,7 @@ import {
 } from '@tabler/icons-react';
 import { lazy, Suspense, useCallback, useEffect, useMemo, useRef, useState, useSyncExternalStore } from 'react';
 import type { EditorSettings } from './editor';
+import { canFormat, formatText } from './format';
 import type { HexLabels } from './HexView';
 import { languages } from './languages';
 import { TextView } from './TextView';
@@ -148,6 +149,20 @@ export function App({ app, i18n, workspace }: Props) {
     [workspace],
   );
 
+  const formatActive = useCallback(async () => {
+    const target = workspace.active;
+    if (target === null || target.mode !== 'text' || target.state === null || !canFormat(target.language)) {
+      return;
+    }
+    try {
+      workspace.replaceText(target, await formatText(target.state.doc.toString(), target.language, settings.tabSize));
+    } catch (error) {
+      // Prettier explains a syntax error on its first line, with the position.
+      const message = error instanceof Error ? (error.message.split('\n')[0] ?? '') : '';
+      setNotice({ text: t('format.failed', { message }) });
+    }
+  }, [workspace, settings.tabSize, t]);
+
   const toggleHex = useCallback(
     (target: Tab) => {
       try {
@@ -249,6 +264,8 @@ export function App({ app, i18n, workspace }: Props) {
         run = () => void save(workspace.active, event.shiftKey);
       } else if (ctrl && !event.altKey && !event.shiftKey && key === 'o') {
         run = () => void pick();
+      } else if (event.altKey && event.shiftKey && !ctrl && key === 'f') {
+        run = () => void formatActive();
       } else if (event.altKey && !ctrl && key === 'n') {
         run = () => workspace.newFile();
       } else if (event.altKey && !ctrl && key === 'w') {
@@ -266,7 +283,7 @@ export function App({ app, i18n, workspace }: Props) {
     };
     window.addEventListener('keydown', onKey, true);
     return () => window.removeEventListener('keydown', onKey, true);
-  }, [workspace, save, pick, requestClose]);
+  }, [workspace, save, pick, requestClose, formatActive]);
 
   const onDrop = async (event: React.DragEvent) => {
     event.preventDefault();
@@ -424,6 +441,9 @@ export function App({ app, i18n, workspace }: Props) {
                     case 'saveAs':
                       void save(tab, true);
                       break;
+                    case 'format':
+                      void formatActive();
+                      break;
                     case 'find':
                       if (view !== null) {
                         openSearchPanel(view);
@@ -455,6 +475,13 @@ export function App({ app, i18n, workspace }: Props) {
                   {t('app.saveAs')}
                 </MenuItem>
                 <MenuSeparator />
+                <MenuItem
+                  id="format"
+                  shortcut="Shift+Alt+F"
+                  isDisabled={tab?.mode !== 'text' || !canFormat(tab.language) || readOnly}
+                >
+                  {t('app.format')}
+                </MenuItem>
                 <MenuItem id="find" shortcut="Ctrl+F" isDisabled={tab?.mode !== 'text'}>
                   {t('app.find')}
                 </MenuItem>

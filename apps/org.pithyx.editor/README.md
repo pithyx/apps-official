@@ -5,6 +5,8 @@ The text, Markdown and hex editor of the Pithyx project. It is not part of the s
 - Several windows, and several files as tabs in each window.
 - Open, create and save files in the shared folders through the desktop's file dialogs; files open with the Editor from the Files app ("Open with", or a double click for the types it is the default for).
 - Syntax highlighting for Markdown, YAML, TOML, JSON, INI and conf files, systemd units, shell, Dockerfile, nginx, XML and HTML, CSS, JavaScript and TypeScript, Python, SQL and more; the language can be changed in the status bar.
+- Syntax errors marked in the text and the gutter for JSON, YAML and TOML (from their parsers) and for XML, HTML, CSS, JavaScript, TypeScript, Python and SQL (from the grammar).
+- Format document with Prettier for JSON, YAML, Markdown, CSS and SCSS, HTML, JavaScript and TypeScript; Prettier loads the first time it is used.
 - Markdown with three views: edit, split and preview. The preview is sanitized, code blocks are highlighted, and links open in a new tab.
 - A hex editor for binary files and, on request, for any file: overwrite and insert, undo, selection, copy and paste as hex or text, go to an offset, and an inspector for the integer and float values at the cursor.
 - Line endings (LF or CRLF) and the UTF-8 byte order mark are kept as they were and can be changed.
@@ -34,6 +36,7 @@ The Editor has no backend and makes no network connections. It sees only the fil
 | Alt+N                      | New file                  |
 | Alt+W                      | Close the tab             |
 | Alt+Page Up, Alt+Page Down | Previous or next tab      |
+| Shift+Alt+F                | Format document           |
 | Ctrl+F                     | Find and replace          |
 | Ctrl+Alt+G                 | Go to line                |
 | Insert (hex editor)        | Switch overwrite / insert |

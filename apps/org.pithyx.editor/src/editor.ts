@@ -24,6 +24,7 @@ import {
 } from '@codemirror/view';
 import { classHighlighter } from '@lezer/highlight';
 import { languageById } from './languages';
+import { lintExtension } from './lint';
 
 export interface EditorSettings {
   wrap: boolean;
@@ -31,6 +32,7 @@ export interface EditorSettings {
 }
 
 export const languageSlot = new Compartment();
+export const lintSlot = new Compartment();
 export const settingsSlot = new Compartment();
 export const readOnlySlot = new Compartment();
 
@@ -80,6 +82,7 @@ export function createEditorState(
         indentWithTab,
       ]),
       languageSlot.of([]),
+      lintSlot.of([]),
       settingsSlot.of(settingsExtension(settings)),
       readOnlySlot.of(EditorState.readOnly.of(false)),
       phrasesSlot.of(EditorState.phrases.of(phrases)),
@@ -88,7 +91,8 @@ export function createEditorState(
   });
 }
 
-/** Loads the grammar of a language and returns the effect that switches a state to it. */
-export async function languageEffect(id: string) {
-  return languageSlot.reconfigure(await languageById(id).load());
+/** Loads the grammar and the error check of a language and returns the effects that switch a state to them. */
+export async function languageEffects(id: string, syntaxMessage: string) {
+  const [language, lint] = await Promise.all([languageById(id).load(), lintExtension(id, syntaxMessage)]);
+  return [languageSlot.reconfigure(language), lintSlot.reconfigure(lint)];
 }

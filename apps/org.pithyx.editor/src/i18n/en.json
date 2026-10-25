@@ -15,7 +15,8 @@
     "fontLarger": "Larger text",
     "fontSmaller": "Smaller text",
     "find": "Find and replace",
-    "goToLine": "Go to line"
+    "goToLine": "Go to line",
+    "format": "Format document"
   },
   "markdown": {
     "views": "Markdown view",
@@ -121,5 +122,11 @@
   "loading": {
     "window": "Opening the Editor ...",
     "file": "Opening {name} ..."
+  },
+  "format": {
+    "failed": "Could not format: {message}"
+  },
+  "lint": {
+    "syntax": "Syntax error"
   }
 }

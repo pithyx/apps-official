@@ -5,7 +5,7 @@ import type { FileRef, PithyxApp } from '@pithyx/sdk';
 import { decode, encode, type Eol } from './codec';
 import {
   createEditorState,
-  languageEffect,
+  languageEffects,
   readOnlySlot,
   settingsExtension,
   settingsSlot,
@@ -82,6 +82,8 @@ export class Workspace {
   private notifying = false;
   /** The window's editor view while a text tab is shown; effects for the shown tab go through it. */
   view: EditorView | null = null;
+  /** The text of a syntax error found by a grammar, in the user's language. */
+  syntaxMessage = 'Syntax error';
 
   constructor(
     private readonly app: PithyxApp,
@@ -259,12 +261,12 @@ export class Workspace {
 
   private async loadLanguage(tab: Tab): Promise<void> {
     const language = tab.language;
-    const effect = await languageEffect(language);
+    const effects = await languageEffects(language, this.syntaxMessage);
     // The tab may have changed its language or mode while the grammar loaded.
     if (tab.state === null || tab.language !== language) {
       return;
     }
-    this.reconfigure(tab, [effect]);
+    this.reconfigure(tab, effects);
   }
 
   /** Applies effects to a tab's state, through the view when the tab is shown so it keeps its scroll position. */
@@ -290,6 +292,35 @@ export class Workspace {
       this.changed();
     } else if (docChanged) {
       this.changed();
+    }
+  }
+
+  /** Replaces a tab's text as one undoable change that touches only the part that differs. */
+  replaceText(tab: Tab, text: string): void {
+    if (tab.state === null) {
+      return;
+    }
+    const old = tab.state.doc.toString();
+    if (old === text) {
+      return;
+    }
+    let start = 0;
+    while (start < old.length && start < text.length && old[start] === text[start]) {
+      start++;
+    }
+    let end = 0;
+    while (
+      end < old.length - start &&
+      end < text.length - start &&
+      old[old.length - 1 - end] === text[text.length - 1 - end]
+    ) {
+      end++;
+    }
+    const changes = { from: start, to: old.length - end, insert: text.slice(start, text.length - end) };
+    if (this.view !== null && this.view.state === tab.state) {
+      this.view.dispatch({ changes });
+    } else {
+      this.updateState(tab, tab.state.update({ changes }).state);
     }
   }
 

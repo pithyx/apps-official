@@ -430,6 +430,14 @@ select:focus-visible {
   font-size: var(--font-size-sm);
 }
 
+.editor-app .text-view .cm-diagnostic-error {
+  border-left-color: var(--color-danger);
+}
+
+.editor-app .text-view .cm-diagnostic-warning {
+  border-left-color: var(--color-warning);
+}
+
 .editor-app .text-view .cm-tooltip {
   background: var(--color-surface-3);
   border: 1px solid var(--color-border);
@@ -779,6 +787,16 @@ select:focus-visible {
   min-height: 24px;
   font-size: var(--font-size-xs);
   background: transparent;
+}
+
+/* The list a native select opens takes the colors of its options, not of the page's scheme. */
+select {
+  color-scheme: inherit;
+}
+
+select option {
+  background: var(--color-surface-1);
+  color: var(--color-text);
 }
 
 .statusbar__badge {

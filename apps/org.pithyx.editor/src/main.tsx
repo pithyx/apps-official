@@ -21,7 +21,11 @@ const i18n = createI18n(app, { en, de });
 const phrases = () => (app.context.language === 'de' ? phrasesDe : {});
 
 const workspace = new Workspace(app, DEFAULT_SETTINGS, phrases(), (n) => i18n.t('app.untitled', { n }));
-app.on('localeChange', () => workspace.updatePhrases(phrases()));
+workspace.syntaxMessage = i18n.t('lint.syntax');
+app.on('localeChange', () => {
+  workspace.updatePhrases(phrases());
+  workspace.syntaxMessage = i18n.t('lint.syntax');
+});
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>

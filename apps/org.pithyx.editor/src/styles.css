@@ -253,6 +253,48 @@ select:focus-visible {
   pointer-events: none;
 }
 
+/* Starting: what the window is opening */
+.busy {
+  margin: auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-3);
+  color: var(--color-text-muted);
+  font-size: var(--font-size-sm);
+}
+
+.busy__bar {
+  width: 160px;
+  height: 3px;
+  border-radius: var(--radius-full);
+  background: linear-gradient(90deg, transparent, var(--color-accent), transparent) 0 0 / 50% 100% no-repeat
+    var(--color-surface-2);
+  animation: busy 1.2s var(--ease-standard, ease-in-out) infinite;
+}
+
+@keyframes busy {
+  from {
+    background-position: -100% 0;
+  }
+  to {
+    background-position: 200% 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .busy__bar {
+    animation: none;
+    background: var(--color-accent);
+  }
+}
+
+/* Long menus (New file as) scroll inside the window instead of running past its bottom edge. */
+[role='menu'] {
+  max-height: min(70vh, 480px);
+  overflow-y: auto;
+}
+
 /* Text and Markdown; the CodeMirror rules carry .editor-app .text-view to win over CodeMirror's own theme. */
 .text-view {
   flex: 1;

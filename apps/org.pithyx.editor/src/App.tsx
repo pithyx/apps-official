@@ -29,9 +29,6 @@ interface Props {
   app: PithyxApp;
   i18n: I18n;
   workspace: Workspace;
-  initialSettings: Settings;
-  /** Names of the files of the last session that could not be opened again. */
-  lostFiles: string[];
 }
 
 type Pending = { kind: 'closeTab'; tab: Tab } | { kind: 'closeWindow' } | null;
@@ -45,18 +42,17 @@ const MARKDOWN_VIEWS: MarkdownView[] = ['edit', 'split', 'preview'];
 
 const HexView = lazy(() => import('./HexView').then((module) => ({ default: module.HexView })));
 
-export function App({ app, i18n, workspace, initialSettings, lostFiles }: Props) {
+export function App({ app, i18n, workspace }: Props) {
   const t = i18n.t;
   useSyncExternalStore(workspace.subscribe, workspace.snapshot);
-  const [settings, setSettings] = useState(initialSettings);
+  const [settings, setSettings] = useState(workspace.settings as Settings);
+  /** What the window is opening while it starts, shown instead of an empty editor. */
+  const [busy, setBusy] = useState<string | null>(t('loading.window'));
+  const booted = useRef(false);
   const [sizeClass, setSizeClass] = useState(app.context.sizeClass);
   const [locale, setLocale] = useState(app.context.locale);
   const [pending, setPending] = useState<Pending>(null);
-  const [notice, setNotice] = useState<Notice | null>(
-    lostFiles.length > 0
-      ? { text: i18n.t('notice.lost', { count: lostFiles.length, names: app.format.list(lostFiles) }) }
-      : null,
-  );
+  const [notice, setNotice] = useState<Notice | null>(null);
   const [cursor, setCursor] = useState({ line: 1, column: 1, selected: 0 });
   const [dropping, setDropping] = useState(false);
   const canRead = app.context.permissions.includes('files.read');
@@ -162,6 +158,42 @@ export function App({ app, i18n, workspace, initialSettings, lostFiles }: Props)
     },
     [workspace, report],
   );
+
+  // The window shows at once; settings, the last session and a file opened with the app load behind a line that
+  // says what is opening.
+  useEffect(() => {
+    if (booted.current) {
+      return;
+    }
+    booted.current = true;
+    void (async () => {
+      try {
+        const stored = await app.storage.get<Partial<Settings>>('settings');
+        const next = { ...DEFAULT_SETTINGS, ...stored };
+        setSettings(next);
+        workspace.applySettings(next);
+      } catch (error) {
+        app.log.warn('Settings not loaded', { code: error instanceof Error ? error.message : 'unknown' });
+      }
+      const lost = await workspace.restoreSession();
+      if (lost.length > 0) {
+        setNotice({ text: t('notice.lost', { count: lost.length, names: app.format.list(lost) }) });
+      }
+      const launched = app.context.launch.file;
+      if (launched !== undefined) {
+        setBusy(t('loading.file', { name: launched.name }));
+        try {
+          await workspace.open(launched);
+        } catch (error) {
+          await report(error);
+        }
+      }
+      if (workspace.tabs.length === 0) {
+        workspace.newFile();
+      }
+      setBusy(null);
+    })();
+  }, [app, workspace, report, t]);
 
   // Desktop events: launch files, theme and size, permissions, updates and the questions before closing.
   useEffect(() => {
@@ -522,7 +554,13 @@ export function App({ app, i18n, workspace, initialSettings, lostFiles }: Props)
       )}
 
       <main className="content">
-        {tab === null && (
+        {busy !== null && (
+          <div className="busy" role="status">
+            <span className="busy__bar" aria-hidden />
+            {busy}
+          </div>
+        )}
+        {busy === null && tab === null && (
           <div className="empty">
             <IconFileText size={48} stroke={1.25} aria-hidden />
             <h1>{t('empty.title')}</h1>

@@ -117,5 +117,9 @@
       }
     },
     "unknown": "Something went wrong."
+  },
+  "loading": {
+    "window": "Opening the Editor ...",
+    "file": "Opening {name} ..."
   }
 }

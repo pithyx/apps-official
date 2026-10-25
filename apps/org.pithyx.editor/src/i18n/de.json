@@ -117,5 +117,9 @@
       }
     },
     "unknown": "Etwas ist schiefgelaufen."
+  },
+  "loading": {
+    "window": "Editor wird geöffnet ...",
+    "file": "{name} wird geöffnet ..."
   }
 }

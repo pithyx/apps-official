@@ -1,0 +1,121 @@
+{
+  "app": {
+    "untitled": "Unbenannt {n}",
+    "toolbar": "Editor-Aktionen",
+    "new": "Neu",
+    "newAs": "Neue Datei als",
+    "open": "Öffnen",
+    "save": "Speichern",
+    "saveAs": "Speichern unter",
+    "more": "Mehr",
+    "hex": "Hex-Editor",
+    "text": "Texteditor",
+    "wrap": "Zeilenumbruch",
+    "tabSize": "Einrückung: {size} Leerzeichen",
+    "fontLarger": "Größere Schrift",
+    "fontSmaller": "Kleinere Schrift",
+    "find": "Suchen und ersetzen",
+    "goToLine": "Gehe zu Zeile"
+  },
+  "markdown": {
+    "views": "Markdown-Ansicht",
+    "edit": "Bearbeiten",
+    "split": "Geteilt",
+    "preview": "Vorschau",
+    "previewLabel": "Markdown-Vorschau"
+  },
+  "tabs": {
+    "label": "Geöffnete Dateien",
+    "close": "{name} schließen",
+    "add": "Neue Datei",
+    "unsaved": "Nicht gespeicherte Änderungen",
+    "readOnly": "Nur lesen"
+  },
+  "status": {
+    "label": "Status",
+    "position": "Z. {line}, Sp. {column}",
+    "selected": "{count, plural, one {# Zeichen} other {# Zeichen}} ausgewählt",
+    "language": "Sprache",
+    "eol": "Zeilenenden",
+    "encoding": "Kodierung",
+    "utf8": "UTF-8",
+    "utf8bom": "UTF-8 mit BOM",
+    "readOnly": "Nur lesen: Du darfst diese Datei nicht ändern. Mit Speichern unter behältst du eine Kopie."
+  },
+  "empty": {
+    "title": "Keine Datei geöffnet",
+    "body": "Erstelle eine neue Datei, öffne eine aus deinen freigegebenen Ordnern oder zieh Dateien von deinem Computer hierher.",
+    "drop": "Dateien zum Öffnen hier ablegen"
+  },
+  "editor": {
+    "label": "Text von {name}"
+  },
+  "hex": {
+    "grid": "Bytes von {name}",
+    "offset": "Position",
+    "goTo": "Gehe zu",
+    "goToPlaceholder": "0x1F oder 31",
+    "insert": "Einfügen",
+    "overwrite": "Überschreiben",
+    "littleEndian": "Little-Endian",
+    "bigEndian": "Big-Endian",
+    "bytes": "{count, plural, one {# Byte} other {# Bytes}}",
+    "selected": "{count, plural, one {# Byte} other {# Bytes}} ausgewählt",
+    "readOnly": "Nur lesen",
+    "end": "Dateiende",
+    "binaryNul": "Diese Datei enthält Binärdaten und wurde deshalb im Hex-Editor geöffnet.",
+    "binaryEncoding": "Diese Datei ist kein UTF-8-Text und wurde deshalb im Hex-Editor geöffnet."
+  },
+  "dialog": {
+    "closeTitle": "Änderungen an {name} speichern?",
+    "closeBody": "Wenn du nicht speicherst, gehen deine Änderungen verloren.",
+    "save": "Speichern",
+    "dontSave": "Nicht speichern",
+    "cancel": "Abbrechen",
+    "windowTitle": "{count, plural, one {# Datei hat} other {# Dateien haben}} nicht gespeicherte Änderungen",
+    "windowBody": "Vor dem Schließen des Fensters speichern?",
+    "saveAll": "Alle speichern",
+    "discard": "Ohne Speichern schließen"
+  },
+  "notice": {
+    "dismiss": "Schließen",
+    "lost": "Öffne {count, plural, one {diese Datei} other {diese Dateien}} noch einmal, um weiterzuarbeiten: {names}. Nach dem Neuladen des Desktops hat der Editor keinen Zugriff mehr darauf.",
+    "updated": "Eine neue Version des Editors ist installiert. Speichere deine Dateien und lade dann neu, um sie zu nutzen.",
+    "reload": "Neu laden",
+    "readOnlySaved": "Kopie als {name} gespeichert."
+  },
+  "errors": {
+    "editor": {
+      "file": {
+        "too_large": "Diese Datei ist größer als {maxMb} MB und damit zu groß für den Editor.",
+        "not_text": "Diese Bytes sind kein UTF-8-Text und lassen sich nicht als Text zeigen."
+      }
+    },
+    "app": {
+      "permission": {
+        "denied": "Ein Administrator hat das für den Editor nicht erlaubt."
+      }
+    },
+    "fs": {
+      "share": {
+        "read_only": "Du darfst diese Datei nur lesen. Mit Speichern unter behältst du eine Kopie.",
+        "unavailable": "Der freigegebene Ordner ist gerade nicht verfügbar."
+      },
+      "entry": {
+        "not_found": "Die Datei gibt es nicht mehr. Mit Speichern unter behältst du deinen Text."
+      },
+      "volume": {
+        "full": "Der Pool ist voll."
+      }
+    },
+    "sdk": {
+      "request": {
+        "timeout": "Der Desktop hat nicht rechtzeitig geantwortet. Versuch es noch einmal."
+      },
+      "transport": {
+        "closed": "Die Verbindung zum Desktop ist weg. Lade das Fenster neu."
+      }
+    },
+    "unknown": "Etwas ist schiefgelaufen."
+  }
+}

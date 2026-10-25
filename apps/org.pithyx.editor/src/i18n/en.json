@@ -1,0 +1,121 @@
+{
+  "app": {
+    "untitled": "Untitled {n}",
+    "toolbar": "Editor actions",
+    "new": "New",
+    "newAs": "New file as",
+    "open": "Open",
+    "save": "Save",
+    "saveAs": "Save as",
+    "more": "More",
+    "hex": "Hex editor",
+    "text": "Text editor",
+    "wrap": "Word wrap",
+    "tabSize": "Indent: {size} spaces",
+    "fontLarger": "Larger text",
+    "fontSmaller": "Smaller text",
+    "find": "Find and replace",
+    "goToLine": "Go to line"
+  },
+  "markdown": {
+    "views": "Markdown view",
+    "edit": "Edit",
+    "split": "Split",
+    "preview": "Preview",
+    "previewLabel": "Markdown preview"
+  },
+  "tabs": {
+    "label": "Open files",
+    "close": "Close {name}",
+    "add": "New file",
+    "unsaved": "Unsaved changes",
+    "readOnly": "Read only"
+  },
+  "status": {
+    "label": "Status",
+    "position": "Ln {line}, Col {column}",
+    "selected": "{count, plural, one {# character} other {# characters}} selected",
+    "language": "Language",
+    "eol": "Line endings",
+    "encoding": "Encoding",
+    "utf8": "UTF-8",
+    "utf8bom": "UTF-8 with BOM",
+    "readOnly": "Read only: you may not change this file. Save as to keep a copy."
+  },
+  "empty": {
+    "title": "No file open",
+    "body": "Create a new file, open one from your shared folders, or drop files from your computer here.",
+    "drop": "Drop files to open them"
+  },
+  "editor": {
+    "label": "Text of {name}"
+  },
+  "hex": {
+    "grid": "Bytes of {name}",
+    "offset": "Offset",
+    "goTo": "Go to",
+    "goToPlaceholder": "0x1F or 31",
+    "insert": "Insert",
+    "overwrite": "Overwrite",
+    "littleEndian": "Little-endian",
+    "bigEndian": "Big-endian",
+    "bytes": "{count, plural, one {# byte} other {# bytes}}",
+    "selected": "{count, plural, one {# byte} other {# bytes}} selected",
+    "readOnly": "Read only",
+    "end": "end of file",
+    "binaryNul": "This file contains binary data, so it opened in the hex editor.",
+    "binaryEncoding": "This file is not UTF-8 text, so it opened in the hex editor."
+  },
+  "dialog": {
+    "closeTitle": "Save changes to {name}?",
+    "closeBody": "Your changes are lost if you do not save them.",
+    "save": "Save",
+    "dontSave": "Don't save",
+    "cancel": "Cancel",
+    "windowTitle": "{count, plural, one {# file has} other {# files have}} unsaved changes",
+    "windowBody": "Save them before the window closes?",
+    "saveAll": "Save all",
+    "discard": "Close without saving"
+  },
+  "notice": {
+    "dismiss": "Dismiss",
+    "lost": "Open {count, plural, one {this file} other {these files}} again to keep working on {count, plural, one {it} other {them}}: {names}. A reload of the desktop ends the access the Editor had.",
+    "updated": "A new version of the Editor is installed. Save your files, then reload to use it.",
+    "reload": "Reload",
+    "readOnlySaved": "Saved a copy as {name}."
+  },
+  "errors": {
+    "editor": {
+      "file": {
+        "too_large": "This file is larger than {maxMb} MB, too large for the editor.",
+        "not_text": "These bytes are not UTF-8 text, so they cannot be shown as text."
+      }
+    },
+    "app": {
+      "permission": {
+        "denied": "An administrator has not allowed this for the Editor."
+      }
+    },
+    "fs": {
+      "share": {
+        "read_only": "You may only read this file. Use Save as to keep a copy.",
+        "unavailable": "The shared folder is not available right now."
+      },
+      "entry": {
+        "not_found": "The file is gone. Use Save as to keep your text."
+      },
+      "volume": {
+        "full": "The pool is full."
+      }
+    },
+    "sdk": {
+      "request": {
+        "timeout": "The desktop did not answer in time. Try again."
+      },
+      "transport": {
+        "closed": "The connection to the desktop is gone. Reload the window."
+      }
+    },
+    "unknown": "Something went wrong."
+  }
+}

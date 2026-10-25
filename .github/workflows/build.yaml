@@ -54,7 +54,11 @@ jobs:
         env:
           APP: ${{ matrix.app.path }}
           ID: ${{ matrix.app.id }}
-        run: pithyx build "$APP" --oci-out "$RUNNER_TEMP/out/$ID/images"
+          # The project's catalogs build apps in org.pithyx.*.
+          RESERVED: ${{ github.repository_owner == 'pithyx' && '--allow-reserved-id' || '' }}
+        run: |
+          # shellcheck disable=SC2086
+          pithyx build "$APP" --oci-out "$RUNNER_TEMP/out/$ID/images" $RESERVED
       - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:
           name: build-${{ matrix.app.id }}

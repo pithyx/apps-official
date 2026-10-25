@@ -112,6 +112,8 @@ jobs:
       - name: Pack the apps and add them to catalog-next
         env:
           APPS: ${{ needs.plan.outputs.apps }}
+          # The project's catalogs pack apps in org.pithyx.*; catalog index still allows them only in the official one.
+          RESERVED: ${{ github.repository_owner == 'pithyx' && '--allow-reserved-id' || '' }}
         run: |
           prefix="$(jq -r .images catalog.json)"
           mkdir -p "$RUNNER_TEMP/packages"
@@ -120,9 +122,11 @@ jobs:
             path="$(jq -r .path <<<"$app")"
             build="$RUNNER_TEMP/builds/$id"
             if [ "$(jq -r .backend <<<"$app")" = true ]; then
-              pithyx build "$path" --pin "$prefix" --oci-out "$build/images"
+              # shellcheck disable=SC2086
+              pithyx build "$path" --pin "$prefix" --oci-out "$build/images" $RESERVED
             fi
-            pithyx pack "$path" --frontend "$build/frontend" --out "$RUNNER_TEMP/packages"
+            # shellcheck disable=SC2086
+            pithyx pack "$path" --frontend "$build/frontend" --out "$RUNNER_TEMP/packages" $RESERVED
           done
           cp catalog.json "$RUNNER_TEMP/branch/catalog.json"
           # shellcheck disable=SC2046

@@ -16,6 +16,15 @@
   "pithyx": ">=1.2.0-0",
   "arch": ["amd64", "arm64"],
   "source": "https://github.com/pithyx/apps-official/tree/master/apps/org.pithyx.editor",
+  "privacy": { "sends": "none" },
+  "security": "https://github.com/pithyx/apps-official/security/policy",
+  "categories": ["office", "development"],
+  "keywords": ["text", "markdown", "code", "hex", "Texteditor"],
+  "locales": ["en", "de"],
+  "releaseNotes": {
+    "en": "Follows manifest version 2: each permission says why the Editor needs it.",
+    "de": "Folgt Manifest-Version 2: Jede Berechtigung sagt, warum der Editor sie braucht."
+  },
   "permissions": {
     "files.read": {
       "reason": {

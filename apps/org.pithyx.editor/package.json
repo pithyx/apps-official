@@ -1,6 +1,6 @@
 {
   "name": "org.pithyx.editor",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "private": true,
   "description": "Text, Markdown and hex editor for Pithyx",
   "license": "MIT",
@@ -33,8 +33,8 @@
     "@fontsource/ibm-plex-sans": "^5.3.0",
     "@fontsource/jetbrains-mono": "^5.3.0",
     "@lezer/highlight": "^1.2.5",
-    "@pithyx/sdk": "^1.0.1",
-    "@pithyx/ui": "^1.0.1",
+    "@pithyx/sdk": "^2.0.0",
+    "@pithyx/ui": "^2.0.0",
     "@tabler/icons-react": "^3.49.0",
     "codemirror": "^6.0.2",
     "dompurify": "^3.4.17",
@@ -46,7 +46,7 @@
     "yaml": "^2.9.1"
   },
   "devDependencies": {
-    "@pithyx/cli": "^1.0.1",
+    "@pithyx/cli": "^2.0.0",
     "@types/react": "^19.3.0",
     "@types/react-dom": "^19.3.0",
     "@vitejs/plugin-react": "^6.1.2",

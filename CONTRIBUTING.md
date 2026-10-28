@@ -28,22 +28,22 @@ A later version changes the same folder and raises `version`. Only a maintainer 
 
 `pithyx catalog check` runs these rules on every pull request; they are the data in `catalog.v1.rules.json` of `@pithyx/sdk`, and a box applies the same rules to custom catalogs.
 
-| Rule                  | What it means                                                                                         |
-| --------------------- | ----------------------------------------------------------------------------------------------------- |
-| One app               | A pull request changes files in one folder `apps/<id>/` and nothing else.                             |
-| Folder and id         | The folder is named like the app's id. Only the official catalog may use `org.pithyx.*`.            |
-| Required files        | `pithyx.json`, `icon.svg`, `maintainers.json`, a license file, and `backend/compose.dev.yaml` for a backend. |
-| Manifest              | Valid for the manifest schema, with `license` and `pithyx`; the icon and the Compose file pass the box's checks. |
-| Higher version        | The version is above every version the catalog published.                                            |
-| License               | An expression of OSI approved licenses (and listed exceptions), no `LicenseRef-`.                    |
-| Text files            | Source and configuration as UTF-8 text without lines over 1000 characters (SVG excepted).            |
-| No binaries           | No compiled code, archives or other binaries; images and fonts only as PNG, JPEG, GIF, WebP and WOFF2 with matching content. |
-| Not minified          | No `.min.js` or `.min.css` files and no generated bundles; the catalog builds them.                  |
-| Hidden files          | Only `.gitignore`, `.dockerignore`, `.editorconfig`, `.npmrc`, `.nvmrc`, `.prettierrc` and `.prettierignore`. |
-| Pinned images         | Every `FROM`, and every `COPY --from` that is not a stage, names an image with `@sha256:` (or `scratch`). |
-| Screenshots           | At most 8, directly in `screenshots/`, PNG, JPEG or WebP, lower case names, at most 1 MB each.       |
-| Size                  | The app folder holds at most 5 MB.                                                                    |
-| Maintainers           | The author of the pull request is listed in `maintainers.json`; a new app's file names its author.   |
+| Rule           | What it means                                                                                                                                                    |
+| -------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| One app        | A pull request changes files in one folder `apps/<id>/` and nothing else.                                                                                        |
+| Folder and id  | The folder is named like the app's id. Only the official catalog may use `org.pithyx.*`.                                                                         |
+| Required files | `pithyx.json`, `icon.svg`, `maintainers.json`, a license file, and `backend/compose.dev.yaml` for a backend.                                                     |
+| Manifest       | Valid for the manifest schema, with `license`, `pithyx` and `privacy`, and a `reason` for every permission; the icon and the Compose file pass the box's checks. |
+| Higher version | The version is above every version the catalog published.                                                                                                        |
+| License        | An expression of OSI approved licenses (and listed exceptions), no `LicenseRef-`.                                                                                |
+| Text files     | Source and configuration as UTF-8 text without lines over 1000 characters (SVG excepted).                                                                        |
+| No binaries    | No compiled code, archives or other binaries; images and fonts only as PNG, JPEG, GIF, WebP and WOFF2 with matching content.                                     |
+| Not minified   | No `.min.js` or `.min.css` files and no generated bundles; the catalog builds them.                                                                              |
+| Hidden files   | Only `.gitignore`, `.dockerignore`, `.editorconfig`, `.npmrc`, `.nvmrc`, `.prettierrc` and `.prettierignore`.                                                    |
+| Pinned images  | Every `FROM`, and every `COPY --from` that is not a stage, names an image with `@sha256:` (or `scratch`).                                                        |
+| Screenshots    | At most 8, directly in `screenshots/`, PNG, JPEG or WebP, lower case names, at most 1 MB each.                                                                   |
+| Size           | The app folder holds at most 5 MB.                                                                                                                               |
+| Maintainers    | The author of the pull request is listed in `maintainers.json`; a new app's file names its author.                                                               |
 
 ## The review
 

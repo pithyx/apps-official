@@ -2,8 +2,8 @@
   "indexVersion": 1,
   "catalog": "org.pithyx.official",
   "channel": "stable",
-  "sequence": 2,
-  "publishedAt": "2026-10-25T13:16:50Z",
+  "sequence": 3,
+  "publishedAt": "2026-10-28T21:05:27Z",
   "apps": {
     "org.pithyx.editor": {
       "versions": {
@@ -30,6 +30,32 @@
           "source": {
             "repository": "https://github.com/pithyx/apps-official",
             "commit": "d873b4b25fc824adf60028a40dea66d43728921d",
+            "path": "apps/org.pithyx.editor"
+          }
+        },
+        "1.1.0": {
+          "publishedAt": "2026-10-28T20:42:59Z",
+          "package": {
+            "sha256": "45c74fcbfcfa9a2c247fae91915f7268053edb556df9f88a775eae4a0c889a8d",
+            "size": 1408089
+          },
+          "manifest": {
+            "sha256": "025aebc0a790d024875d5f574550fa22cf2cb1b77c896221ef24911e5956ccd7",
+            "size": 4000
+          },
+          "icon": {
+            "sha256": "cf7cbcc9ae37ef729f8d22e217d4d6185b710a59dd13c75a6a974d82319df3e2",
+            "size": 982
+          },
+          "architectures": [
+            "amd64",
+            "arm64"
+          ],
+          "pithyx": ">=1.2.0-0",
+          "license": "MIT",
+          "source": {
+            "repository": "https://github.com/pithyx/apps-official",
+            "commit": "6acbc850e6bd9a57852436730aed3052db9503f1",
             "path": "apps/org.pithyx.editor"
           }
         }
